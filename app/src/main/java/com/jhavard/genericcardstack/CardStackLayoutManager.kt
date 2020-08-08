@@ -2,6 +2,7 @@ package com.jhavard.genericcardstack
 
 import android.os.Handler
 import android.os.Looper
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.absoluteValue
 import kotlin.math.min
@@ -49,18 +50,23 @@ class CardStackLayoutManager(
                     }
                 }
                 view.translationX = currentDx.toFloat()
+                updateItemRotation(view)
             }
 
-            if (itemCount > 0) {
-                view.translationY = -30f * position
-                view.scaleX = 0.8f - 0.05f * position
-                view.scaleY = 0.8f
-            }
+            updateItemTranslation(view, position)
+            updateItemScale(view, position)
         }
     }
 
+
+    // Scroll
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
     override fun canScrollHorizontally(): Boolean =
         settings.swipeDirection == CardStackSettings.SwipeDirection.HORIZONTAL
+
+    override fun canScrollVertically(): Boolean =
+        settings.swipeDirection == CardStackSettings.SwipeDirection.VERTICAL
 
     override fun scrollHorizontallyBy(
         dx: Int,
@@ -81,5 +87,22 @@ class CardStackLayoutManager(
             }
             RecyclerView.SCROLL_STATE_SETTLING -> hasSwipeEnded = false
         }
+    }
+
+
+    // Private methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private fun updateItemTranslation(view: View, position: Int) {
+        view.translationY = -30f * position
+    }
+
+    private fun updateItemScale(view: View, position: Int) {
+        view.scaleX = settings.scaleFactor - 0.05f * position
+        view.scaleY = settings.scaleFactor
+    }
+
+    private fun updateItemRotation(view: View) {
+        // TODO
     }
 }
